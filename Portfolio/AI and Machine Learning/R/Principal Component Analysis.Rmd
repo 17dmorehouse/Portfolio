@@ -1,0 +1,36 @@
+---
+title: "Principal Component Analysis"
+author: "Devan Morehouse"
+date: "2023-09-19"
+output: html_document
+---
+
+# Principal Component Analysis (PCA)
+
+Principal Component Analysis (PCA) is a valuable technique in data analysis, especially when you want to reduce the dimensionality of high-dimensional data while preserving the most critical information. It is commonly applied to numeric data types, typically using continuous variables, such as real numbers or integers. PCA is beneficial when dealing with datasets containing a large number of features or variables, like in genomics, image analysis, or finance. By transforming the original variables into a new set of orthogonal variables (principal components), PCA simplifies data representation while retaining as much variance as possible. This can aid in visualizing data, identifying dominant patterns, and improving computational efficiency in subsequent analysis tasks, such as clustering, classification, or regression.
+
+```{r}
+
+cereals.df <- read.csv("C:\\Users\\dev46\\OneDrive\\Desktop\\School Documents\\Spring 2023\\MGQ 408 Bus. Analytics & Data Science\\Data\\Cereals.csv")
+pcs <- prcomp(data.frame(cereals.df$calories, cereals.df$rating))
+## Note: 86% of the total variance is accounted for by component 
+summary(pcs)
+
+## Non-Normalized 
+### Note: na.omit will omit null values 
+boston.housing.df <- read.csv("C:\\Users\\dev46\\OneDrive\\Desktop\\School Documents\\Spring 2023\\MGQ 408 Bus. Analytics & Data Science\\Data\\BostonHousing.csv")
+pcs <- prcomp(na.omit(boston.housing.df[,-c(5:10)])) 
+summary(pcs)
+
+#pcs$sd^2
+plot(pcs)
+
+## Normalized 
+pcs <- prcomp(na.omit(boston.housing.df[,-c(5:10)]),scale. = T) 
+summary(pcs)
+
+#pcs$sd^2
+plot(pcs)
+
+```
+

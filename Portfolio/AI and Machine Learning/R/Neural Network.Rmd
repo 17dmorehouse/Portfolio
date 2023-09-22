@@ -1,0 +1,57 @@
+---
+title: "Neural Networks"
+author: "Devan Morehouse"
+date: "2023-09-21"
+output: html_document
+---
+
+```{r}
+library(neuralnet)
+df <- read.csv("C:\\Users\\dev46\\OneDrive\\Desktop\\School Documents\\Spring 2023\\MGQ 408 Bus. Analytics & Data Science\\Data\\TinyData.csv")
+
+df$Like <- df$Acceptance == 'like'
+df$Dislike <- df$Acceptance == 'dislike'
+
+set.seed(1)
+nn <- neuralnet(Like + Dislike ~ Salt + Fat, data = df, 
+                linear.output = F, hidden = 3)
+
+# display weights
+#nn$weights
+# display predictions
+#prediction(nn)
+
+# plot network
+plot(nn, rep="best")
+```
+
+```{r}
+car.df <- read.csv("C:\\Users\\dev46\\OneDrive\\Desktop\\School Documents\\Spring 2023\\MGQ 408 Bus. Analytics & Data Science\\Data\\ToyotaCorolla.csv")
+car.df <- car.df[, c("Price", "Age_08_04", "KM", "Fuel_Type", "HP", "Automatic", "Doors", "Quarterly_Tax","Mfr_Guarantee", "Guarantee_Period","Airco", "Automatic_airco", "CD_Player", "Powered_Windows", "Sport_Model", "Tow_Bar")]
+car.df$Fuel_Type_CNG <- 1 * (car.df$Fuel_Type == "CNG")
+car.df$Fuel_Type_Diesel <- 1 * (car.df$Fuel_Type == "Diesel")
+car.df <- car.df[,-c(4)]
+
+train.index <- sample(c(1:dim(car.df)[1]), dim(car.df)[1]*0.60)
+train.df <- car.df[train.index, ]
+valid.df <- car.df[-train.index, ]
+train.norm.df <- train.df
+valid.norm.df <- valid.df
+
+library(caret)
+library(neuralnet)
+library(forecast)
+
+norm.values <- preProcess(train.df[,-c(1)], method = "range")
+train.norm.df <- predict(norm.values, train.df)
+valid.norm.df <- predict(norm.values, valid.df)
+nn <- neuralnet(Price ~ ., data= train.norm.df, hidden = c(5), linear.output = T)
+validation.prediction <- compute(nn, valid.norm.df[,-c(1)])
+plot(nn, rep="best")
+```
+
+```{r}
+accuracy(as.numeric(validation.prediction$net.result), valid.norm.df$Price)
+```
+
+
