@@ -1,0 +1,54 @@
+---
+title: "Data Formatting and Cleaning"
+author: "Devan Morehouse"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+This file uses the risk factors for cervival cancer data set found on this website. https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29
+
+
+
+This code is designed for reading and analyzing the structure of the data that R has imported from this file.
+
+```{r}
+stemp= "C:\\Users\\dev46\\OneDrive\\Desktop\\Fall 2023\\Data Stewardship\\Data\\risk_factors_cervical_cancer.csv"
+risk_factors_cervical_cancer=read.csv(stemp)
+str(risk_factors_cervical_cancer)
+```
+
+This code enables us to view the raw data from the initial rows. 
+
+```{r}
+rawString = readLines(stemp)
+rawString[1:5]
+```
+
+Noteworthy observations from this data include R's alteration of variable names, where spaces, colons, parentheses, and hyphens have been replaced with periods. This suggests that the data set is in a comma-separated values format, and it also indicates that NA values are represented as "?".
+
+Once we have examined the data set and made our observations, we can seamlessly format it to the "read.table()" function in R, where we can then review its structure once again.
+
+```{r}
+risk_factors_cervical_cancer = read.table(stemp, header=TRUE, na.strings = "?", sep=",")
+head(risk_factors_cervical_cancer)
+str(risk_factors_cervical_cancer)
+
+```
+
+After visiting the website (https://archive.ics.uci.edu/ml/datasets/Cervical+cancer+%28Risk+Factors%29), we have identified certain column variables that should be factored into True or False labels. Below this is R code that defines a function to select and process the relevant columns accordingly. 
+
+```{r}
+Factor_List = c('Smokes','Hormonal.Contraceptives','IUD','STDs','STDs.condylomatosis','STDs.cervical.condylomatosis','STDs.vaginal.condylomatosis','STDs.vulvo.perineal.condylomatosis','STDs.syphilis','STDs.pelvic.inflammatory.disease','STDs.genital.herpes','STDs.molluscum.contagiosum','STDs.AIDS','STDs.HIV','STDs.Hepatitis.B','STDs.HPV','Dx.Cancer','Dx.CIN','Dx.HPV','Dx','Hinselmann','Schiller','Citology','Biopsy')
+
+for(x in Factor_List){
+  risk_factors_cervical_cancer[,x] <- factor(risk_factors_cervical_cancer[,x], labels=c('False','True'), levels=c(0,1))
+}
+head(risk_factors_cervical_cancer)
+```
+
+Now that the data set has been successfully formatted and cleaned, we can save this file to our desktop.
+
+```{r}
+write.table(risk_factors_cervical_cancer,file="C:\\Users\\dev46\\OneDrive\\Desktop\\Fall 2023\\Data Stewardship\\HW\\10.03.2023 Week 5\\risk_factors_cervical_cancer.data",sep=",",row.names=TRUE,col.names=TRUE)
+```
+
