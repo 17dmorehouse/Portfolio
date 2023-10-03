@@ -1,0 +1,28 @@
+---
+title: "Time Series"
+author: "Devan Morehouse"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+EXERCISE 4.4.1
+Create a times series object starting at 1990 with value 100 and ending in 2000 in which for each even month, the value increases with 2% the previous month, and each odd month decreases with 1%. What is the final value?
+
+```{r}
+Value <- 100
+Stored_values <- c()
+
+# 132 the number of months from 1990 to 2000 (11 (years) * 12 (months in a year))
+for(x in 1:132){
+  if (x%%2 == 1){ #If the value is odd
+    Value = Value*(1.0 - 0.01) #Value decreases by 1%
+  } 
+  else { #else (for the even values)
+    Value = Value*(1.0 + 0.02) #Value is increases by 2%
+  }
+  Stored_values <- c(Stored_values, Value)
+}
+
+Month <- ts(data = Stored_values, start = 1990, frequency = 12)
+Month
+```
